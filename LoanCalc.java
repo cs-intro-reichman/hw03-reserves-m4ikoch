@@ -25,10 +25,12 @@ public class LoanCalc {
 		System.out.println("number of iterations: " + iterationCounter);
 
 		// Computes the periodical payment using bisection search
+
 		System.out.print("Periodical payment, using bi-section search: ");
 		System.out.printf("%.2f", bisectionSolver(loan, rate, n, epsilon));
 		System.out.println();
-		System.out.println("number of iterations: " + iterationCounter);
+		System.out.println("number of iterations: " + iterationCounter);		 
+
 	}
 	
 	/**
@@ -39,8 +41,14 @@ public class LoanCalc {
 	*/
 	// Side effect: modifies the class variable iterationCounter.
     public static double bruteForceSolver(double loan, double rate, int n, double epsilon) {  
-    	// Replace the following statement with your code
-    	return 0;
+		double payment = loan / n + 0.001;
+		double balance = loan ; 
+		while ( balance > epsilon ) {
+			balance = endBalance(loan, rate, n, payment) ;
+			payment += epsilon ;
+			iterationCounter ++;
+		}
+		return payment ;
     }
     
     /**
@@ -50,9 +58,23 @@ public class LoanCalc {
 	* the number of periods (n), and epsilon, a tolerance level.
 	*/
 	// Side effect: modifies the class variable iterationCounter.
-    public static double bisectionSolver(double loan, double rate, int n, double epsilon) {  
-    	// Replace the following statement with your code
-    	return 0;
+    public static double bisectionSolver(double loan, double rate, int n, double epsilon) {
+		double low = (loan / n) ;
+		double hi = loan; 
+		double payment = (low + hi) / 2 ; 
+		iterationCounter = 0;
+    	while (hi - low > epsilon) {
+			if (endBalance(loan, rate, n, payment) * endBalance(loan, rate, n, low) > 0) {
+				low = payment;
+				payment = (hi + low) / 2 ;
+			}
+			else {
+				hi = payment ;
+				payment = (hi + low) / 2 ;
+			}
+			iterationCounter++ ;
+		}
+    	return payment;
     }
 	
 	/**
@@ -60,7 +82,10 @@ public class LoanCalc {
 	* interest rate (as a percentage), the number of periods (n), and the periodical payment.
 	*/
 	private static double endBalance(double loan, double rate, int n, double payment) {
-		// Replace the following statement with your code
-    	return 0;
+		double balance = loan ; 
+		for ( int i = 1 ; i <= n ; i++) {
+			balance = (balance - payment) * (1+ rate/100); //balance equal to previous balance + rate
+			}
+    	return balance;
 	}
 }
